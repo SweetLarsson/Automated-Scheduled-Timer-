@@ -1,0 +1,5 @@
+{
+  "name": "Dynamic Service Timer",
+  "description": "A feature-rich event scheduler and countdown timer with a 3-second splash screen, designed for precise time management during services and presentations.",
+  "requestFramePermissions": []
+}
