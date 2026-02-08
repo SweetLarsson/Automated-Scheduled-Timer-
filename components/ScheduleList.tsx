@@ -1,17 +1,19 @@
 
 import React, { useState } from 'react';
-import { Activity } from '../types';
+import { Activity, TimerState } from '../types';
 
 interface Props {
   activities: Activity[];
   currentIndex: number | null;
+  stagedIndex: number | null;
   remainingTime: number; 
+  timerState: TimerState;
   onSelect: (index: number) => void;
   onDelete: (id: string) => void;
   onReorder: (activities: Activity[]) => void;
 }
 
-const ScheduleList: React.FC<Props> = ({ activities, currentIndex, remainingTime, onSelect, onDelete, onReorder }) => {
+const ScheduleList: React.FC<Props> = ({ activities, currentIndex, stagedIndex, remainingTime, timerState, onSelect, onDelete, onReorder }) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const formatSeconds = (totalSeconds: number) => {
@@ -45,6 +47,9 @@ const ScheduleList: React.FC<Props> = ({ activities, currentIndex, remainingTime
       <ul className="flex flex-col gap-2">
         {activities.map((activity, index) => {
           const isSelected = currentIndex === index;
+          const isStaged = stagedIndex === index;
+          const isTransitioning = isSelected && timerState === TimerState.TRANSITION;
+          
           return (
             <li 
               key={activity.id}
@@ -55,23 +60,33 @@ const ScheduleList: React.FC<Props> = ({ activities, currentIndex, remainingTime
               onClick={() => onSelect(index)}
               className={`flex items-center justify-between p-4 rounded-xl border transition-all cursor-grab active:cursor-grabbing group shadow-md
                 ${isSelected 
-                  ? 'bg-orange-600/10 border-orange-500 ring-1 ring-orange-500/50' 
-                  : 'bg-[#1a1a1a] border-[#333] hover:border-[#444] hover:bg-[#222]'
+                  ? (isTransitioning ? 'bg-blue-600/10 border-blue-500 ring-1 ring-blue-500/50' : 'bg-orange-600/10 border-orange-500 ring-1 ring-orange-500/50')
+                  : isStaged
+                    ? 'bg-purple-600/10 border-purple-500 border-dashed ring-1 ring-purple-500/30'
+                    : 'bg-[#1a1a1a] border-[#333] hover:border-[#444] hover:bg-[#222]'
                 } ${draggedIndex === index ? 'opacity-30' : 'opacity-100'}
               `}
             >
               <div className="flex items-center gap-3 overflow-hidden">
                 <div className="flex flex-col overflow-hidden">
-                  <span className={`font-bold text-[13px] truncate ${isSelected ? 'text-orange-500' : 'text-gray-200'}`}>
-                    {index + 1}. {activity.name}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`font-bold text-[13px] truncate ${isSelected ? (isTransitioning ? 'text-blue-400' : 'text-orange-500') : isStaged ? 'text-purple-400' : 'text-gray-200'}`}>
+                      {index + 1}. {activity.name}
+                    </span>
+                    {isSelected && (
+                      <span className="text-[9px] bg-orange-600 text-white px-1.5 py-0.5 rounded font-black tracking-tighter uppercase">Live</span>
+                    )}
+                    {isStaged && !isSelected && (
+                      <span className="text-[9px] bg-purple-600 text-white px-1.5 py-0.5 rounded font-black tracking-tighter uppercase">Staged</span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-[11px] font-mono text-gray-500 bg-black/30 px-2 py-0.5 rounded-md">
                       {formatSeconds(activity.durationSeconds)}
                     </span>
                     {isSelected && (
-                      <span className="text-[11px] font-black text-orange-500 animate-pulse whitespace-nowrap">
-                        • {formatSeconds(remainingTime)}
+                      <span className={`text-[11px] font-black animate-pulse whitespace-nowrap ${isTransitioning ? 'text-blue-400' : 'text-orange-500'}`}>
+                        • {isTransitioning ? `Transitioning: ${remainingTime}s` : formatSeconds(remainingTime)}
                       </span>
                     )}
                   </div>

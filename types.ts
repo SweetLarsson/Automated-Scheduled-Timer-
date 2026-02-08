@@ -9,4 +9,5 @@ export enum TimerState {
   IDLE = 'IDLE',
   RUNNING = 'RUNNING',
   PAUSED = 'PAUSED',
+  TRANSITION = 'TRANSITION',
 }

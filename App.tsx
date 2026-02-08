@@ -10,7 +10,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('projector') === 'true') {
+    const hasProjectorParam = params.get('projector') === 'true';
+    const hasProjectorHash = window.location.hash === '#projector';
+
+    if (hasProjectorParam || hasProjectorHash) {
       setIsProjector(true);
       setShowSplash(false);
     } else {
