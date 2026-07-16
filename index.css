@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

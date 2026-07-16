@@ -5,15 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Service Timer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/index.css">
+    <script>
+        // Apply theme immediately to prevent flashing
+        (function() {
+            const savedTheme = localStorage.getItem('service_timer_theme');
+            const isDark = savedTheme !== 'light';
+            document.documentElement.classList.toggle('dark', isDark);
+        })();
+    </script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #1e1e1e;
-            color: white;
             margin: 0;
             overflow: hidden;
+        }
+        /* Default theme background to avoid white flash in dark mode */
+        html.dark body {
+            background-color: #121212;
+            color: white;
+        }
+        html:not(.dark) body {
+            background-color: #f3f4f6;
+            color: #111;
         }
         .bebas-font {
             font-family: 'Bebas Neue', cursive;
@@ -42,17 +57,9 @@
             -webkit-mask-image: linear-gradient(to bottom, transparent, black 35%, black 65%, transparent);
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
-  }
-}
-</script>
 </head>
 <body>
     <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
